@@ -18,18 +18,43 @@ const Cell = styled.div`
   height: 80px;
   border: 1px solid black;
 `;
+const Ship = styled.div`
+  width: 80px;
+  height: 80px;
+  border: 1px solid black;
+  background: red;
+`;
 
 function App() {
 
-  const [shipPosition, setShipPosition] = useState([])
+  const [shipsPosition, setShipsPosition] = useState([])
 
 const getCell = () => {
   const rowShip = parseInt((Math.random() * 8).toFixed(0))
   const cellShip = parseInt((Math.random() * 8).toFixed(0))
   
-  setShipPosition([rowShip, cellShip])
+  setShipsPosition([
+    [[rowShip, cellShip],[rowShip + 1, cellShip + 1]],
+    // [[rowShip + 1, cellShip + 1]],
+    // [rowShip - 1, cellShip]
+    // [rowShip, cellShip, rowShip - 1, cellShip],
+    // [rowShip, cellShip, rowShip, cellShip - 1, rowShip, cellShip - 1],
+    // [rowShip, cellShip, rowShip, cellShip + 1, rowShip, cellShip + 1, rowShip, cellShip + 1]
+  ])
 
-  console.log(rowShip, cellShip)
+  // console.log(rowShip, cellShip)
+}
+
+const checkShip = (row, cell) => {
+  let trueShip = false;
+  shipsPosition.forEach(ship => {
+    ship.forEach(shipCell => {
+      shipCell[0] === row && shipCell[1] === cell ? trueShip = !trueShip : trueShip = false
+    })
+    // trueCell ? trueShip = true : trueShip = false
+  })
+  console.log(row, trueShip)
+  return trueShip
 }
 
   useEffect(() => {
@@ -42,12 +67,12 @@ const getCell = () => {
       {fightField.map((row, index) => {
         return (
           <Row key={index}>
-            Row: {index + 1}
+            Row: {index}
             {row.map((field, i) => {
-              if( index === shipPosition[0] || i === shipPosition[1]) {
-                console.log('test')
+              if(checkShip(index, i)) {
+                return <Ship key={i}>Field: {i}</Ship>
               } else {
-                return <Cell className={[index + 1, i + 1]} key={i}>Field: {i}</Cell>;
+                return <Cell key={i}>Field: {i}</Cell>;
               }
             })}
           </Row>
