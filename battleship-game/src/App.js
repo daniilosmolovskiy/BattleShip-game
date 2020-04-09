@@ -34,8 +34,8 @@ const getCell = () => {
   const cellShip = parseInt((Math.random() * 8).toFixed(0))
   
   setShipsPosition([
-    [[rowShip, cellShip],[rowShip + 1, cellShip + 1]],
-    // [[rowShip + 1, cellShip + 1]],
+    [[rowShip, cellShip], [rowShip + 1, cellShip]],
+    // [[rowShip - 1, cellShip]],
     // [rowShip - 1, cellShip]
     // [rowShip, cellShip, rowShip - 1, cellShip],
     // [rowShip, cellShip, rowShip, cellShip - 1, rowShip, cellShip - 1],
@@ -46,14 +46,19 @@ const getCell = () => {
 }
 
 const checkShip = (row, cell) => {
-  let trueShip = false;
+  let trueShip = true;
   shipsPosition.forEach(ship => {
-    ship.forEach(shipCell => {
-      shipCell[0] === row && shipCell[1] === cell ? trueShip = !trueShip : trueShip = false
+    ship.some(shipCell => {
+      if(shipCell[0] === row && shipCell[1] === cell) {
+        trueShip = true
+        return trueShip
+      } else trueShip = false
     })
+    if(trueShip)
+      return
     // trueCell ? trueShip = true : trueShip = false
   })
-  console.log(row, trueShip)
+  // console.log(row, cell, trueShip)
   return trueShip
 }
 
@@ -68,11 +73,11 @@ const checkShip = (row, cell) => {
         return (
           <Row key={index}>
             Row: {index}
-            {row.map((field, i) => {
-              if(checkShip(index, i)) {
-                return <Ship key={i}>Field: {i}</Ship>
+            {row.map((field, indexCell) => {
+              if(checkShip(index, indexCell)) {
+                return <Ship key={indexCell}>Field: {indexCell}</Ship>
               } else {
-                return <Cell key={i}>Field: {i}</Cell>;
+                return <Cell key={indexCell}>Field: {indexCell}</Cell>;
               }
             })}
           </Row>
